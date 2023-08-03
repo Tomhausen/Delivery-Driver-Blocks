@@ -3,6 +3,13 @@ namespace SpriteKind {
     export const house = SpriteKind.create()
     export const minimap = SpriteKind.create()
 }
+scene.onHitWall(SpriteKind.Player, function (sprite, location) {
+    if (Math.abs(speed) > 50) {
+        seconds_since_damage = 0
+        info.changeLifeBy(-1)
+    }
+    speed = 0
+})
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     if (minimap_open) {
         minimap_sprite.setFlag(SpriteFlag.Invisible, true)
@@ -100,6 +107,7 @@ let drop_off_sprite: Sprite = null
 let parcel: Sprite = null
 let car_dir = 0
 let minimap_sprite: Sprite = null
+let seconds_since_damage = 0
 let minimap_open = false
 let car: Sprite = null
 let has_parcel = false
@@ -125,10 +133,23 @@ scene.cameraFollowSprite(car)
 setup_level()
 minimap_open = false
 minimap_setup()
+info.setLife(5)
+seconds_since_damage = 0
 game.onUpdate(function () {
     accelerate()
     turn()
     calculate_velocities()
+})
+game.onUpdateInterval(1000, function () {
+    if (seconds_since_damage < 10) {
+        seconds_since_damage += 1
+    } else {
+        if (info.life() < 5) {
+            info.changeLifeBy(1)
+        }
+        seconds_since_damage = 0
+    }
+    console.log(seconds_since_damage)
 })
 game.onUpdateInterval(100, function () {
     if (minimap_open) {
