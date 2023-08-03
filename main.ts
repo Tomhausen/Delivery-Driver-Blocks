@@ -1,7 +1,17 @@
 namespace SpriteKind {
     export const drop_off = SpriteKind.create()
     export const house = SpriteKind.create()
+    export const minimap = SpriteKind.create()
 }
+controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (minimap_open) {
+        minimap_sprite.setFlag(SpriteFlag.Invisible, true)
+        minimap_open = false
+    } else {
+        minimap_sprite.setFlag(SpriteFlag.Invisible, false)
+        minimap_open = true
+    }
+})
 function calculate_velocities () {
     car_dir = spriteutils.degreesToRadians(transformSprites.getRotation(car))
     car.vx = Math.sin(car_dir) * speed
@@ -23,6 +33,14 @@ function select_target () {
     house_pos = house_locations[randint(0, house_locations.length - 1)]
     delivery_pos = tiles.getTileLocation(house_pos.column, house_pos.row + 1)
     tiles.placeOnTile(drop_off_sprite, delivery_pos)
+}
+function minimap_setup () {
+    minimap_object = minimap.minimap(MinimapScale.Quarter, 2, 0)
+    minimap_image = minimap.getImage(minimap_object)
+    minimap_sprite = sprites.create(minimap_image, SpriteKind.minimap)
+    minimap_sprite.z = 10
+    minimap_sprite.setFlag(SpriteFlag.RelativeToCamera, true)
+    minimap_sprite.setFlag(SpriteFlag.Invisible, true)
 }
 function turn () {
     if (controller.right.isPressed()) {
@@ -73,12 +91,16 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (car, parcel) {
 let row = 0
 let col = 0
 let house_sprite: Sprite = null
+let minimap_image: Image = null
+let minimap_object: minimap.Minimap = null
 let delivery_pos: tiles.Location = null
 let house_pos: tiles.Location = null
 let house_locations: tiles.Location[] = []
 let drop_off_sprite: Sprite = null
 let parcel: Sprite = null
 let car_dir = 0
+let minimap_sprite: Sprite = null
+let minimap_open = false
 let car: Sprite = null
 let has_parcel = false
 let steer_reduction = 0
@@ -101,8 +123,27 @@ car = sprites.create(assets.image`car`, SpriteKind.Player)
 transformSprites.rotateSprite(car, 90)
 scene.cameraFollowSprite(car)
 setup_level()
+minimap_open = false
+minimap_setup()
 game.onUpdate(function () {
     accelerate()
     turn()
     calculate_velocities()
+})
+game.onUpdateInterval(100, function () {
+    if (minimap_open) {
+        minimap_object = minimap.minimap(MinimapScale.Quarter, 2, 0)
+        minimap.includeSprite(minimap_object, car)
+        for (let value of sprites.allOfKind(SpriteKind.house)) {
+            minimap.includeSprite(minimap_object, value)
+        }
+        if (has_parcel) {
+            drop_off_sprite = sprites.allOfKind(SpriteKind.drop_off)[0]
+            minimap.includeSprite(minimap_object, drop_off_sprite)
+        } else {
+            parcel = sprites.allOfKind(SpriteKind.Food)[0]
+            minimap.includeSprite(minimap_object, parcel)
+        }
+        minimap_sprite.setImage(minimap.getImage(minimap_object))
+    }
 })
