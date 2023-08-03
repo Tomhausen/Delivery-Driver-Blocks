@@ -5,7 +5,8 @@
         "device": "*",
         "pxt-arcade-image-transform": "github:robo-technical-group/pxt-arcade-image-transform#v1.0.9",
         "Sprite Grid": "github:microsoft/arcade-grid#v1.3.0",
-        "arcade-sprite-util": "github:jwunderl/arcade-sprite-util#v0.4.0"
+        "arcade-sprite-util": "github:jwunderl/arcade-sprite-util#v0.4.0",
+        "arcade-minimap": "github:microsoft/arcade-minimap#v0.6.1"
     },
     "files": [
         "main.blocks",
