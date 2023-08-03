@@ -1,0 +1,32 @@
+{
+    "name": "driving",
+    "description": "",
+    "dependencies": {
+        "device": "*",
+        "pxt-arcade-image-transform": "github:robo-technical-group/pxt-arcade-image-transform#v1.0.9",
+        "Sprite Grid": "github:microsoft/arcade-grid#v1.3.0",
+        "arcade-sprite-util": "github:jwunderl/arcade-sprite-util#v0.4.0"
+    },
+    "files": [
+        "main.blocks",
+        "main.ts",
+        "assets.json",
+        "tilemap.g.jres",
+        "tilemap.g.ts",
+        "main_backup.txt",
+        "images.g.jres",
+        "images.g.ts"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "targetVersions": {
+        "target": "1.13.9",
+        "pxt": "8.2.5",
+        "targetId": "arcade"
+    },
+    "supportedTargets": [
+        "arcade"
+    ],
+    "preferredEditor": "blocksprj"
+}
